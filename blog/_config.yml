@@ -11,9 +11,9 @@ email: januridp@hotmail.com
 description: > # this means to ignore newlines until "baseurl:"
  The contents of this website are &copy; 2016 under the terms of the MIT License. Powered by Jekyll &amp; Proudly hosted by GitHub.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://januri.github.io" # the base hostname & protocol for your site
+url: "http://januridp.github.io/blog" # the base hostname & protocol for your site
 twitter_username: januridp
-github_username:  januri
+github_username:  januridp
 
 # Build settings
 markdown: kramdown
