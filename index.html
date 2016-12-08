@@ -12,39 +12,61 @@
 
     <!-- Bootstrap core CSS -->
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- Bootstrap theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 	<!-- Font Awesome CSS -->
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 	<style>
-body {
-  padding-top: 70px;
-  padding-bottom: 30px;
+/* Google Fonts */
+@import url(http://fonts.googleapis.com/css?family=Anonymous+Pro);
+
+/* Global */
+html{
+  min-height: 100%;
+  overflow: hidden;
+}
+body{
+  height: calc(100vh - 8em);
+  padding: 4em;
+  color: rgba(255,255,255,.75);
+  font-family: 'Anonymous Pro', monospace;  
+  background-color: rgb(25,25,25);  
+}
+.line-1{
+    position: relative;
+    top: 50%;  
+    width: 24em;
+    margin: 0 auto;
+    border-right: 2px solid rgba(255,255,255,.75);
+    font-size: 100%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    transform: translateY(-50%);    
 }
 
-.theme-dropdown .dropdown-menu {
-  position: static;
-  display: block;
-  margin-bottom: 20px;
+/* Animation */
+.anim-typewriter{
+  animation: typewriter 4s steps(21) 1s 1 normal both,
+             blinkTextCursor 500ms steps(21) infinite normal;
 }
-
-.theme-showcase > p > .btn {
-  margin: 5px 0;
+@keyframes typewriter{
+  from{width: 0;}
+  to{width: 11em;}
 }
-
-.theme-showcase .navbar .container {
-  width: auto;
+@keyframes blinkTextCursor{
+  from{border-right-color: rgba(255,255,255,.75);}
+  to{border-right-color: transparent;}
 }
 </style>
   </head>
 
   <body>
-    <div class="container theme-showcase" role="main">
+    <div class="container">
       <div class="">
-        <h2>Hi, <font color="white">kenalkan saya Januri Dwi Prasetyo.</font></h2>
+        <h2>Hi, kenalkan saya <p class="line-1 anim-typewriter">Januri Dwi Prasetyo</p></h2>
         <p>
 		You can catch me with 
 		<i class="fa fa-hand-o-right fa-fw"></i>
+		<a href="mailto:mail@januridp.com" data-toggle="tooltip" data-placement="left" title="Tooltip on left"><i class="fa fa-envelope fa-flip-horizontal fa-lg fa-fw"></i></a>
 		<a href="https://www.facebook.com/JanuriDP"><i class="fa fa-facebook fa-flip-horizontal fa-lg fa-fw"></i></a>
 		<a href="https://twitter.com/JanuriDP"><i class="fa fa-twitter fa-flip-horizontal fa-lg fa-fw"></i></a>
 		<a href="https://github.com/JanuriDP"><i class="fa fa-github fa-flip-horizontal fa-lg fa-fw"></i></a>
