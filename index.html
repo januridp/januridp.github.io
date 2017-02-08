@@ -196,55 +196,6 @@ result.innerHTML = '' +
   </script>
   <!-- end ip -->
   
-  <!-- Script by hscripts.com -->
-<script type="text/javascript">
-function ctck() {
-var sds = document.getElementById("dum");
-if(sds == null){
-alert("You are using a free package.\n You are not allowed to remove the tag.\n"); }
-var sdss = document.getElementById("dumdiv");
-if(sdss == null){
-alert("You are using a free package.\n You are not allowed to remove the tag.\n");
-} } document.onload="ctck()";
-function getCookieVal(offset)
-{
-var endstr = document.cookie.indexOf (";", offset);
-if (endstr == -1)
-endstr = document.cookie.length;
-return unescape(document.cookie.substring(offset, endstr)); }
-function GetCookie(name)
-{
-var arg = name + "=";
-var alen = arg.length;
-var clen = document.cookie.length;
-var i = 0;
-while (i < clen)
-{
-var j = i + alen;
-if (document.cookie.substring(i, j) == arg)
-return getCookieVal (j);
-i = document.cookie.indexOf(" ", i) + 1;
-if (i == 0)
-break;
-}
-return null; } function SetCookie (name, value)
-{
-var argv = SetCookie.arguments;
-var argc = SetCookie.arguments.length;
-var expires = (2 < argc) ? argv[2] : null;
-var path = (3 < argc) ? argv[3] : null;
-var domain = (4 < argc) ? argv[4] : null;
-var secure = (5 < argc) ? argv[5] : false;
-document.cookie = name + "=" + escape (value) +((expires == null) ? "" : ("; expires=" +expires.toGMTString())) +((path == null) ? "" : ("; path=" + path)) +((domain == null) ? "" : ("; domain=" + domain)) +((secure == true) ? "; secure" : ""); }
-var expDays = 30; var expDate = new Date(); expDate.setTime(expDate.getTime() + (expDays*24*60*60*1000));
-function DisplayInfo()
-{ var cnt = GetCookie('cnt'); if(cnt == null) { SetCookie('cnt','1'); return 1; } else { var cnt1 = parseInt(cnt) + 1; SetCookie('cnt',cnt1,expDate); return cnt;
-}
-}
-document.write("You have visited this page " + DisplayInfo() + " times.");
-</script>
-<!-- Script by hscripts.com -->
-  
   <!-- start analytics -->
   <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
