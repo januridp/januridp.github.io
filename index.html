@@ -72,12 +72,12 @@ body{
 
 /* Animation */
 .anim-typewriter{
-  animation: typewriter 4s steps(21) 1s 1 normal both,
-             blinkTextCursor 500ms steps(21) infinite normal;
+  animation: typewriter 3s steps(12) 1s 1 normal both,
+             blinkTextCursor 500ms steps(12) infinite normal;
 }
 @keyframes typewriter{
   from{width: 0;}
-  to{width: 11em;}
+  to{width: 6em;}
 }
 @keyframes blinkTextCursor{
   from{border-right-color: rgba(255,255,255,.75);}
@@ -93,9 +93,7 @@ body{
   <div class="col-xs-12 col-sm-12 col-md-12">
   <div class="panel panel-default">
   <div class="panel-body">
-    <div class="container">
-      <div class="">
-        <h2>Hello world! I'm <p class="line-1 anim-typewriter">Januri Dwi Prasetyo</p></h2>
+        <h3>Hello world! I'm <p class="line-1 anim-typewriter">Januri D. P.</p></h3>
         <p>
 		You can catch me with 
 		<i class="fa fa-hand-o-right fa-fw"></i>
@@ -109,39 +107,42 @@ body{
 		<a href="https://imnogo.blogspot.com/feeds/posts/default?alt=rss"><i class="fa fa-rss fa-flip-horizontal fa-lg fa-fw"></i></a>
 		<a href="https://www.paypal.me/januridp"><i class="fa fa-rss fa-paypal fa-lg fa-fw"></i></a>
 		</p>
-      </div>
-	  </div>
   </div>
 </div>
   </div>
-  
 </div>
 
 <div class="row">
-  <div class="col-xs-6 col-sm-4">
+
+  <div class="col-xs-12 col-sm-4 col-md-4">
 	<div class="panel panel-default">
-  <div class="panel-body" id="result">
-  
+  <div class="panel-body" id="result">  
   </div>
 </div>
-  </div>
-  <div class="col-xs-6 col-sm-4">
+</div>
+
+  <div class="col-xs-12 col-sm-4 col-md-4">
   <div class="panel panel-default">
-  <div class="panel-body">
-    <p id="resultIP"></p>
+  <div class="panel-body" id="resultIP">
   </div>
 </div>
-  </div>
+</div>
+
   <!-- Optional: clear the XS cols if their content doesn't match in height -->
   <div class="clearfix visible-xs-block"></div>
   <div class="col-xs-6 col-sm-4">
   <div class="panel panel-default">
   <div class="panel-body">
-  
 </div>
   </div>
 </div>
-	  
+
+</div>
+	   <footer class="footer">
+      <div class="container">
+        <p class="text-muted">Place sticky footer content here.</p>
+      </div>
+    </footer>
 
 
      
