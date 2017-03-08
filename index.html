@@ -48,14 +48,10 @@ oo $ $ "$      o$$$$$$$$$    $$$$$$$$$$$$$    $$$$$$$$$o       $$$o$$o$
 /* Global */
 html{
   min-height: 100%;
-  overflow: hidden;
 }
-body{
-  height: calc(100vh - 8em);
-  padding: 4em;
-  /*color: rgba(255,255,255,.75);*/
-  font-family: 'Anonymous Pro', monospace;  
-  background-color: rgb(25,25,25);  
+body{  
+  padding-top: 50px;
+  padding-bottom: 20px;
 }
 .line-1{
     position: relative;
@@ -87,13 +83,20 @@ body{
   </head>
 
   <body>
-    
-	  
-	  <div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-12">
-  <div class="panel panel-default">
-  <div class="panel-body">
-        <h3>Hello world! I'm <p class="line-1 anim-typewriter">Januri D. P.</p></h3>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Januri D. P.</a>
+        </div>	
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h3>Hello world! I'm </h3>
+		<p class="line-1 anim-typewriter">Januri D. P.</p>
         <p>
 		You can catch me with 
 		<i class="fa fa-hand-o-right fa-fw"></i>
@@ -105,46 +108,53 @@ body{
 		<a href="https://www.youtube.com/user/TheGeekStyle"><i class="fa fa-youtube fa-flip-horizontal fa-lg fa-fw"></i></a>
 		<a href="https://id.linkedin.com/in/JanuriDP"><i class="fa fa-linkedin fa-flip-horizontal fa-lg fa-fw"></i></a>
 		<a href="https://imnogo.blogspot.com/feeds/posts/default?alt=rss"><i class="fa fa-rss fa-flip-horizontal fa-lg fa-fw"></i></a>
-		<a href="https://www.paypal.me/januridp"><i class="fa fa-rss fa-paypal fa-lg fa-fw"></i></a>
+		<a href="https://www.paypal.me/januridp"><i class="fa fa-rss fa-paypal fa-flip-horizontal fa-lg fa-fw"></i></a>
+		<a href="#" data-toggle="modal" data-target="#myModal"><i class="fa fa-rss fa-bitcoin fa-flip-horizontal fa-lg fa-fw"></i></a>
 		</p>
-  </div>
-</div>
-  </div>
-</div>
-
-<div class="row">
-
-  <div class="col-xs-12 col-sm-4 col-md-4">
-	<div class="panel panel-default">
-  <div class="panel-body" id="result">  
-  </div>
-</div>
-</div>
-
-  <div class="col-xs-12 col-sm-4 col-md-4">
-  <div class="panel panel-default">
-  <div class="panel-body" id="resultIP">
-  </div>
-</div>
-</div>
-
-  <!-- Optional: clear the XS cols if their content doesn't match in height -->
-  <div class="clearfix visible-xs-block"></div>
-  <div class="col-xs-6 col-sm-4">
-  <div class="panel panel-default">
-  <div class="panel-body">
-</div>
-  </div>
-</div>
-
-</div>
-	   <footer class="footer">
-      <div class="container">
-        <p class="text-muted">Place sticky footer content here.</p>
       </div>
-    </footer>
+    </div>
 
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <p id="result"></p>
+        </div>
+        <div class="col-md-4">
+          <p id="resultIP"></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Full-Stack Developer</h2>
+		  </p>
+        </div>
+      </div>
 
+      <hr>
+
+      <footer>
+        <p>&copy; JanuriDP.com</p>
+      </footer>
+    </div> <!-- /container -->
+
+	<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Donate me ^_^</h4>
+      </div>
+      <div class="modal-body">
+	  <center>
+        <img src="qrcode.39217981.png" class="img-responsive">15eeBcFNNDSdnLstSW3YE6Yvp4ds2Hdwu4
+		</center>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Thanks</button>
+      </div>
+    </div>
+  </div>
+</div>
      
 
 
