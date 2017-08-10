@@ -40,7 +40,10 @@ oo $ $ "$      o$$$$$$$$$    $$$$$$$$$$$$$    $$$$$$$$$o       $$$o$$o$
     <!-- Bootstrap core CSS -->
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<!-- Font Awesome CSS -->
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css">
+
 	<style>
 /* Google Fonts */
 @import url(http://fonts.googleapis.com/css?family=Anonymous+Pro);
@@ -96,7 +99,7 @@ body{
 	  
   </head>
 
-  <body>
+  <body onload="getYear()">
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -132,21 +135,69 @@ body{
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
+		<h2>User Agent</h2>
           <p id="result"></p>
         </div>
         <div class="col-md-4">
-          <p id="resultIP"></p>
+		<h2>Your IP</h2>
+          <span id="resultIP"></span>
        </div>
         <div class="col-md-4">
-          <h2>Full-Stack Developer</h2>
-		  </p>
+          <h2>Tech-Stack</h2>
+		  <div class="row">
+		  <div class="col-xs-6 col-md-4">Web</div>
+		  <div class="col-xs-12 col-sm-6 col-md-8">
+		  <i class="devicon-html5-plain colored" title="HTML5"></i>
+		  <i class="devicon-css3-plain colored" title="CSS3"></i>
+		  <i class="devicon-bootstrap-plain colored" title="Bootstrap"></i>
+		  <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+		  <i class="devicon-codeigniter-plain colored" title="CodeIgniter"></i>
+		  </div>
+		  </div>
+		  <div class="row">
+		  <div class="col-xs-6 col-md-4">Mobile</div>
+		  <div class="col-xs-12 col-sm-6 col-md-8">
+		  <i class="devicon-android-plain colored" title="Android"></i>
+		  </div>
+		  </div>
+		  <div class="row">
+		  <div class="col-xs-6 col-md-4">Editor</div>
+		  <div class="col-xs-12 col-sm-6 col-md-8">
+		  <i class="devicon-atom-original colored" title="Atom"></i>
+		  <i class="devicon-visualstudio-plain colored" title="VS Code"></i>
+		  </div>
+		  </div>
+		  <div class="row">
+		  <div class="col-xs-6 col-md-4">Databases</div>
+		  <div class="col-xs-12 col-sm-6 col-md-8">
+		  <i class="devicon-mysql-plain colored" title="MySQL"></i>
+		  <i class="devicon-oracle-original colored" title="Oracle"></i>
+		  </div>
+		  </div>
+		  <div class="row">
+		  <div class="col-xs-6 col-md-4">OS</div>
+		  <div class="col-xs-12 col-sm-6 col-md-8">
+		  <i class="devicon-ubuntu-plain colored" title="Ubuntu"></i>
+		  <i class="devicon-debian-plain colored" title="Debian"></i>
+		  <i class="devicon-windows8-original colored" title="Windows"></i>
+		  </div>
+		  </div>
+		  <div class="row">
+		  <div class="col-xs-6 col-md-4">Team</div>
+		  <div class="col-xs-12 col-sm-6 col-md-8">
+		  <i class="devicon-trello-plain colored" title="Trello"></i>
+		  <i class="devicon-git-plain colored" title="Git"></i>
+		  <i class="devicon-slack-plain colored" title="Slack"></i>
+		  </div>
+		  </div>
+		  
         </div>
       </div>
 
       <hr>
 
       <footer>
-        <p>&copy; JanuriDP.com</p>
+        <p>Copyleft <i class="fa fa-copyright fa-flip-horizontal"></i> <span id="year"></span> &middot; JanuriDP.com</p>
       </footer>
     </div> <!-- /container -->
 
@@ -221,6 +272,14 @@ result.innerHTML = '' +
 });//doc
   </script>
   <!-- end ip -->
+  
+  <script>
+function getYear() {
+    var d = new Date();
+    var n = d.getFullYear();
+    document.getElementById("year").innerHTML = n;
+}
+</script>
   
   </body>
 </html>
