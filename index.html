@@ -252,12 +252,17 @@ result.innerHTML = '' +
   <script>
   $(document).ready(function() {
     $.ajax({
-        url: 'http://freegeoip.net/json/',
+        url: 'http://api.ipstack.com/check?access_key=745f78a7cc0dc3c5b323e239b3e28547&output=json',
         dataType: 'jsonp',
         cache: true,
         jsonp: 'callback',
         success: function(data) {
-            $('#resultIP').append('<br>Your IP: ' + data.ip +'<br>Your city: ' + data.city + ', ' + data.country_name + ' ('+ data.country_code + ')' + '<br>Your LatLng: ' + data.latitude + ', ' + data.longitude + '<br>Time Zone: ' + data.time_zone);
+            $('#resultIP').append('<br>Your IP: ' + data.ip + ' ('+ data.type + ')' 
+			+ '<br>Your continent: ' + data.continent_name + ' ('+ data.continent_code + ')'
+			+ '<br>Your country: <img height="10px" width="10px" src="'+ data.location.country_flag + '">' + data.country_name + ' ('+ data.country_code + ')'
+			+ '<br>Your language: ' + data.location.languages[0].native
+			+ '<br>Your capital: ' + data.location.capital
+			+ '<br>Your LatLng: ' + data.latitude + ', ' + data.longitude);
         },
         error: function() {
             $('#resultIP').append('geolocation not supported');
