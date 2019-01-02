@@ -44,44 +44,6 @@ oo $ $ "$      o$$$$$$$$$    $$$$$$$$$$$$$    $$$$$$$$$o       $$$o$$o$
 	
 	<link rel="stylesheet" href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css">
 
-	<style>
-/* Google Fonts */
-@import url(http://fonts.googleapis.com/css?family=Anonymous+Pro);
-/* Global */
-html{
-  min-height: 100%;
-}
-body{  
-  padding-top: 50px;
-  padding-bottom: 20px;
-}
-.line-1{
-    position: relative;
-    top: 50%;  
-    width: 24em;
-    margin: 0 auto;
-    border-right: 2px solid rgba(255,255,255,.75);
-    font-size: 100%;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    transform: translateY(-50%);    
-}
-/* Animation */
-.anim-typewriter{
-  animation: typewriter 3s steps(12) 1s 1 normal both,
-             blinkTextCursor 500ms steps(12) infinite normal;
-}
-@keyframes typewriter{
-  from{width: 0;}
-  to{width: 6em;}
-}
-@keyframes blinkTextCursor{
-  from{border-right-color: rgba(255,255,255,.75);}
-  to{border-right-color: transparent;}
-}
-</style>
-	  
 	  <!-- start analytics -->
   <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -92,7 +54,7 @@ body{
   ga('send', 'pageview');
 </script>
 <!-- end analytics -->
-	  
+<script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>	  
   </head>
 
   <body onload="getYear()">
@@ -108,8 +70,7 @@ body{
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h3>Hello world! I'm </h3>
-		<p class="line-1 anim-typewriter">Januri D. P.</p>
+        <h3>Hello world!</h3>
         <p>
 		You can catch me with 
 		<i class="fa fa-hand-o-right fa-fw"></i>
@@ -130,6 +91,9 @@ body{
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
+	<div class="col-md-4">
+<div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="en_US" data-type="vertical" data-theme="dark" data-vanity="januridp"><a class="LI-simple-link" href='https://id.linkedin.com/in/januridp?trk=profile-badge'>Januri D. P.</a></div>
+	</div>
         <div class="col-md-4">
 		<h2>User Agent</h2>
           <p id="result"></p>
