@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <title>Jadwal Sidang TA</title>
+    
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 100;
+        padding: 100;
+      }
+
+      body {
+        background-color: #ffd54f;
+      }
+
+      .container {
+        color: #333;
+        text-align: center;
+      }
+
+      h1 {
+        font-weight: normal;
+      }
+
+      li {
+        display: inline-block;
+        font-size: 1.5em;
+        list-style-type: none;
+        padding: 1em;
+        text-transform: uppercase;
+      }
+
+      li span {
+        display: block;
+        font-size: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+  <h1 id="head">Jadwal Sidang TA <b>22 Juli 2019</b> :</h1>
+  <ul>
+    <li><span id="months"></span></li>
+    <li><span id="weeks"></span></li>
+    <li><span id="days"></span></li>
+    <li><span id="hours"></span></li>
+    <li><span id="minutes"></span></li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
+<script>
+moment.locale('id');
+const date = '2019-07-22',
+      second = 1000,
+      minute = second * 60,
+      hour = minute * 60,
+      day = hour * 24;
+
+const months = moment(date).fromNow(true);
+
+let countDown = new Date(date).getTime(),
+    x = setInterval(function() {
+
+      let now = new Date().getTime(),
+          distance = countDown - now;
+
+      document.getElementById('months').innerText =  months,
+      document.getElementById('weeks').innerText = Math.floor(distance /  (7 * 24 * 3600 * second)) + 1  + ' minggu',
+      document.getElementById('days').innerText = Math.floor(distance / (day)) + ' hari',
+      document.getElementById('hours').innerText = Math.floor((distance % (day)) / (hour)) + ' jam',
+      document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)) + ' menit',
+      document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second) + ' detik';
+      
+      if (distance < 0) {
+       clearInterval(x);
+       alert("IT'S MY DAY!");
+      }
+
+    }, second)
+	</script>
+  </body>
+</html>
