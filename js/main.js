@@ -64,7 +64,7 @@ async function getIpInfo() {
 
         document.getElementById('ip-info').innerHTML = `
             <div class="prompt">IP: <span style="color:var(--neon-cyan)">${data.ip || 'Unknown'}</span></div>
-            <div class="prompt">Location: <span style="color:var(--text-main)">${data.city || ''}, ${data.country_name || 'Unknown'} <img src="${data.location?.country_flag_emoji || ''}" width="16" style="vertical-align: middle"></span></div>
+            <div class="prompt">Location: <span style="color:var(--text-main)">${data.city || ''}, ${data.country_name || 'Unknown'} ${data.location?.country_flag_emoji}</span></div>
             <div class="prompt">Coordinates: <span style="color:var(--text-main)">${data.latitude}, ${data.longitude}</span></div>
         `;
     } catch (error) {
