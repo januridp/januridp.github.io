@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Base64 Encoder & Decoder - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Base64 Encoder</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+    
+    <style>
+        .calc-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 2rem auto;
+        }
+        .mode-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        .mode-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            transition: all 0.3s ease;
+        }
+        .mode-btn.active {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+        .io-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .io-block {
+            flex: 1;
+        }
+        .io-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-family: 'Fira Code', monospace;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus {
+            border-color: var(--neon-cyan);
+        }
+        .action-btn {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+        }
+        .back-btn {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        .back-btn:hover {
+            color: var(--neon-cyan);
+        }
+        .error-msg {
+            color: #ff5f56;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .back-btn { position: static; margin-bottom: 2rem; }
+        }
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-cyan);
+            color: var(--bg-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Base64_Tool</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Swiss-army knife for converting text to Base64 and vice versa.
+            </p>
+
+            <div class="mode-selector">
+                <button class="mode-btn active" id="mode-encode">ENCODE</button>
+                <button class="mode-btn" id="mode-decode">DECODE</button>
+            </div>
+
+            <div class="glass-card">
+                <div class="io-container">
+                    <div class="io-block">
+                        <div class="io-label">
+                            <span id="label-input">Input (Plain Text)</span>
+                            <button class="action-btn" id="clear-btn">Clear</button>
+                        </div>
+                        <textarea id="input-text" placeholder="Type or paste here..."></textarea>
+                    </div>
+
+                    <div style="text-align: center; color: var(--text-muted);">
+                        <i class="fa-solid fa-arrow-down" id="arrow-icon"></i>
+                    </div>
+
+                    <div class="io-block">
+                        <div class="io-label">
+                            <span id="label-output">Output (Base64)</span>
+                            <button class="action-btn" id="copy-btn">Copy Output</button>
+                        </div>
+                        <textarea id="output-text" readonly placeholder="Result will appear here..."></textarea>
+                        <div id="error-msg" class="error-msg">Error: Invalid Base64 string.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast" class="toast">Copied to Clipboard!</div>
+
+    <app-footer></app-footer>
+
+    <script>
+        const modeEncode = document.getElementById('mode-encode');
+        const modeDecode = document.getElementById('mode-decode');
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const labelInput = document.getElementById('label-input');
+        const labelOutput = document.getElementById('label-output');
+        const clearBtn = document.getElementById('clear-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const errorMsg = document.getElementById('error-msg');
+        const toast = document.getElementById('toast');
+
+        let mode = 'encode';
+
+        function updateLabels() {
+            if (mode === 'encode') {
+                labelInput.textContent = 'Input (Plain Text)';
+                labelOutput.textContent = 'Output (Base64)';
+                modeEncode.classList.add('active');
+                modeDecode.classList.remove('active');
+            } else {
+                labelInput.textContent = 'Input (Base64)';
+                labelOutput.textContent = 'Output (Plain Text)';
+                modeDecode.classList.add('active');
+                modeEncode.classList.remove('active');
+            }
+            process();
+        }
+
+        function process() {
+            const input = inputText.value;
+            errorMsg.style.display = 'none';
+            if (!input) {
+                outputText.value = '';
+                return;
+            }
+
+            try {
+                if (mode === 'encode') {
+                    outputText.value = btoa(unescape(encodeURIComponent(input)));
+                } else {
+                    outputText.value = decodeURIComponent(escape(atob(input)));
+                }
+            } catch (e) {
+                outputText.value = '';
+                if (mode === 'decode') {
+                    errorMsg.style.display = 'block';
+                }
+            }
+        }
+
+        modeEncode.addEventListener('click', () => {
+            mode = 'encode';
+            updateLabels();
+        });
+
+        modeDecode.addEventListener('click', () => {
+            mode = 'decode';
+            updateLabels();
+        });
+
+        inputText.addEventListener('input', process);
+
+        clearBtn.addEventListener('click', () => {
+            inputText.value = '';
+            outputText.value = '';
+            errorMsg.style.display = 'none';
+        });
+
+        copyBtn.addEventListener('click', () => {
+            const text = outputText.value;
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

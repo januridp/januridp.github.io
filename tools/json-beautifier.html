@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="JSON Beautifier & Formatter - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | JSON Beautifier</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 900px; width: 100%; margin: 2rem auto; }
+        textarea {
+            width: 100%; height: 400px; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            padding: 1.5rem; color: var(--text-main); font-family: 'Fira Code', monospace;
+            font-size: 0.9rem; outline: none; margin-bottom: 2rem; white-space: pre; overflow-x: auto;
+        }
+        textarea:focus { border-color: var(--neon-cyan); }
+        .error-msg { color: #ff5f56; font-family: 'Fira Code'; font-size: 0.85rem; margin-top: -1.5rem; margin-bottom: 1rem; display: none; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./JSON_Formatter</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Clean up messy JSON, validate syntax, and minify code for your API requests.
+            </p>
+
+            <div class="glass-card">
+                <textarea id="json-input" placeholder="Paste your raw JSON here..."></textarea>
+                <div id="error-msg" class="error-msg">Error: Invalid JSON format.</div>
+                
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn" style="flex: 2;" onclick="process('beautify')">Beautify (4 spaces)</button>
+                    <button class="btn" style="flex: 2;" onclick="process('beautify2')">Beautify (2 spaces)</button>
+                    <button class="btn" style="flex: 1;" onclick="process('minify')">Minify</button>
+                    <button class="btn" style="flex: 1; border-color: var(--text-muted); color: var(--text-muted);" onclick="clearAll()">Clear</button>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button class="btn" style="width: 100%;" onclick="copyResult()">Copy Formatted JSON</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const input = document.getElementById('json-input');
+        const error = document.getElementById('error-msg');
+
+        function process(type) {
+            const raw = input.value;
+            if (!raw) return;
+
+            error.style.display = 'none';
+            try {
+                const obj = JSON.parse(raw);
+                if (type === 'beautify') input.value = JSON.stringify(obj, null, 4);
+                else if (type === 'beautify2') input.value = JSON.stringify(obj, null, 2);
+                else if (type === 'minify') input.value = JSON.stringify(obj);
+            } catch (e) {
+                error.textContent = `Error: ${e.message}`;
+                error.style.display = 'block';
+            }
+        }
+
+        function clearAll() { input.value = ''; error.style.display = 'none'; }
+        function copyResult() {
+            navigator.clipboard.writeText(input.value);
+            alert('JSON copied!');
+        }
+    </script>
+</body>
+</html>

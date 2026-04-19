@@ -22,20 +22,14 @@
         gtag('js', new Date());
         gtag('config', 'UA-77344648-3');
     </script>
+    <script src="js/header.js" defer></script>
+    <script src="js/footer.js" defer></script>
 </head>
 
 <body>
 
     <!-- Navigation -->
-    <nav>
-        <a href="#home" class="nav-brand">januridp<span>.</span></a>
-        <ul class="nav-links">
-            <li><a href="#home" class="active">./home</a></li>
-            <li><a href="#about">./about</a></li>
-            <li><a href="https://blog.januridp.web.id/" target="_blank">./blog</a></li>
-            <li><a href="#contact">./contact</a></li>
-        </ul>
-    </nav>
+    <app-header></app-header>
 
     <!-- Home Section -->
     <section id="home" class="hero fade-in">
@@ -96,6 +90,184 @@
         </div>
     </section>
 
+    <!-- Tools Section -->
+    <section id="tools" class="fade-in">
+        <h2 class="mono" style="margin-bottom: 2rem; font-size: 2.5rem; text-align: center;">./Tools_&_Games</h2>
+        <p class="hero-subtitle text-center" style="margin-bottom: 3rem;">
+            A collection of web-based tools for SysAdmins and some games I've built.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; width: 100%;">
+            <!-- Tool 1 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-network-wired" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Subnet Calculator</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Quickly calculate network subnets, IP ranges, and CIDR masks.</p>
+                <a href="tools/subnet-calculator.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 2 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Password Generator</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Generate secure, random passwords for your infrastructure.</p>
+                <a href="tools/password-generator.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 3 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-code" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Base64 Encoder</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Easily encode and decode Base64 strings on the fly.</p>
+                <a href="tools/base64-encoder.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 4 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-calendar-check" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Crontab Generator</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Build cron schedules with a simple visual interface.</p>
+                <a href="tools/crontab-generator.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 5 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-earth-americas" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">What is My IP</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Identify your public IP and network connection details.</p>
+                <a href="tools/my-ip.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 6 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-fingerprint" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Hash Tool</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Generate and verify cryptographic hashes (MD5, SHA-256).</p>
+                <a href="tools/hash-tool.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 7 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-terminal" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Linux Snippets</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Quick troubleshooting commands for daily SysAdmin work.</p>
+                <a href="tools/linux-snippets.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 8 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-brands fa-markdown" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Markdown Tool</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Live Markdown editor and viewer for your documentation.</p>
+                <a href="tools/markdown-tool.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 9 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-code-compare" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Diff Checker</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Compare text, files, and code to find differences fast.</p>
+                <a href="tools/diff-checker.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 10 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-font" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Convert Case</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Switch between uppercase, lowercase, camelCase, and more.</p>
+                <a href="tools/convert-case.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 11 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-indent" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">JSON Beautifier</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Format and validate messy JSON with ease.</p>
+                <a href="tools/json-beautifier.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 12 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-globe" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">WHOIS Lookup</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Lookup domain registration info, dates, and registrars.</p>
+                <a href="tools/whois-lookup.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 13 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-network-wired" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">DNS Query</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Query A, MX, TXT and other DNS records via DoH.</p>
+                <a href="tools/dns-lookup.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 14 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-calculator" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">OmniCalc Complete</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Comprehensive calculator suite for advanced mathematical and conversion needs.</p>
+                <a href="https://omnicalc-complete-edition.januridp.workers.dev/" target="_blank" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 15 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-list-check" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Kanban Focus</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Agile task management and focus tracking for your development sprints.</p>
+                <a href="https://kanban.januridp.web.id/" target="_blank" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 16 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-car-side" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">RideCheck</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Vehicle maintenance tracker and status check for your personal rides.</p>
+                <a href="https://ridecheck.januridp.web.id/" target="_blank" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 17 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-id-card" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">NIK KTP Parser</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Extract demographic and geographic data from Indonesian NIK.</p>
+                <a href="tools/nik-parser.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Tool 18 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-phone-volume" style="font-size: 2.5rem; color: var(--neon-cyan); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">HLR Lookup</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Identify provider and regional coverage for phone numbers.</p>
+                <a href="tools/hlr-lookup.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Open Tool</a>
+            </div>
+
+            <!-- Game 1 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-gamepad" style="font-size: 2.5rem; color: #ffbd2e; margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Retro Snake</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">A classic retro snake game to pass the time between deployments.</p>
+                <a href="games/snake.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-color: #ffbd2e; color: #ffbd2e;">Play Now</a>
+            </div>
+
+            <!-- Game 2 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-graduation-cap" style="font-size: 2.5rem; color: #ffbd2e; margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Kids Flashcards</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">An interactive tap-and-learn flashcard game for young learners.</p>
+                <a href="https://rizz.januridp.web.id/" target="_blank" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-color: #ffbd2e; color: #ffbd2e;">Play Now</a>
+            </div>
+            
+            <!-- Game 3 -->
+            <div class="glass-card text-center" style="padding: 2rem;">
+                <i class="fa-solid fa-chess-board" style="font-size: 2.5rem; color: #ffbd2e; margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Tic Tac Toe</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">The classic terminal-style tic tac toe against an AI.</p>
+                <a href="games/tic-tac-toe.html" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-color: #ffbd2e; color: #ffbd2e;">Play Now</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="fade-in">
         <h2 class="mono" style="margin-bottom: 2rem; font-size: 2.5rem; text-align: center;">./Connect</h2>
@@ -137,10 +309,7 @@
         </div>
     </section>
 
-    <footer>
-        <p>Copyleft <i class="fa-solid fa-copyright fa-flip-horizontal"></i> 2016-<span id="year"></span> &middot; <a
-                href="https://januridp.web.id">JanuriDP</a></p>
-    </footer>
+    <app-footer></app-footer>
 
     <script src="js/main.js"></script>
 </body>

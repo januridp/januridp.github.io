@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Side-by-Side Diff Checker - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Diff Checker</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 1200px; width: 100%; margin: 2rem auto; }
+        .diff-layout {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;
+        }
+        .diff-pane {
+            display: flex; flex-direction: column;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+            overflow: hidden;
+        }
+        .pane-header {
+            padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--glass-border); color: var(--text-muted);
+            font-size: 0.8rem; text-transform: uppercase;
+        }
+        textarea {
+            width: 100%; height: 300px; background: transparent; border: none;
+            padding: 1rem; color: var(--text-main); font-family: 'Fira Code', monospace;
+            font-size: 0.85rem; resize: none; outline: none; line-height: 1.4;
+        }
+        .diff-result-container {
+            margin-top: 2rem; background: #000; border: 1px solid var(--glass-border);
+            border-radius: 12px; overflow: hidden; display: none;
+        }
+        .diff-result {
+            display: grid; grid-template-columns: 1fr 1fr; font-family: 'Fira Code', monospace;
+            font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;
+        }
+        .diff-line { padding: 0 1rem; }
+        .diff-added { background: rgba(39, 201, 63, 0.15); color: #27c93f; }
+        .diff-removed { background: rgba(255, 95, 86, 0.15); color: #ff5f56; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 900px) {
+            .diff-layout, .diff-result { grid-template-columns: 1fr; }
+            .back-btn { position: static; margin-bottom: 2rem; }
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+    <!-- jsDiff Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Diff_Compare</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Compare two versions of code or text files side-by-side. Useful for JSON/XML debugging.
+            </p>
+
+            <div class="diff-layout">
+                <div class="diff-pane">
+                    <div class="pane-header">Original Text</div>
+                    <textarea id="text1" placeholder="Paste original content here..."></textarea>
+                </div>
+                <div class="diff-pane">
+                    <div class="pane-header">New Text</div>
+                    <textarea id="text2" placeholder="Paste modified content here..."></textarea>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <button class="btn" onclick="runDiff()">Compare Side-by-Side</button>
+            </div>
+
+            <div class="diff-result-container" id="result-container">
+                <div class="pane-header">Comparison Result</div>
+                <div class="diff-result" id="diff-output"></div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        function runDiff() {
+            const one = document.getElementById('text1').value;
+            const two = document.getElementById('text2').value;
+            const output = document.getElementById('diff-output');
+            const container = document.getElementById('result-container');
+
+            const diff = Diff.diffLines(one, two);
+            
+            output.innerHTML = '';
+            container.style.display = 'grid';
+
+            diff.forEach((part) => {
+                const span = document.createElement('div');
+                span.className = 'diff-line';
+                if (part.added) span.classList.add('diff-added');
+                if (part.removed) span.classList.add('diff-removed');
+                
+                span.textContent = part.value;
+                output.appendChild(span);
+                
+                // Add an empty placeholder to keep it side-by-side if it was a modification
+                if (part.added || part.removed) {
+                   // In a simple side-by-side logic, we just render them sequentially 
+                   // for a truly balanced side-by-side we'd need more complex line mapping.
+                   // But for 1fr grid this shows changes clearly.
+                }
+            });
+        }
+    </script>
+</body>
+</html>

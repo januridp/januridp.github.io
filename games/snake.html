@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Retro Snake Game - JanuriDP Portfolio">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Retro Snake</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .game-container {
+            max-width: 600px; width: 100%; margin: 2rem auto; text-align: center; position: relative;
+        }
+        canvas {
+            display: block; margin: 0 auto; background: #000; border: 2px solid var(--neon-cyan);
+            border-radius: 8px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            image-rendering: pixelated;
+        }
+        .stats-row {
+            display: flex; justify-content: space-between; margin-bottom: 1.5rem;
+            font-family: 'Fira Code', monospace; color: var(--text-muted);
+        }
+        .score-val { color: var(--neon-cyan); font-weight: 800; font-size: 1.2rem; }
+        
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; border-radius: 8px;
+            z-index: 10; cursor: pointer;
+        }
+        .overlay h2 { color: var(--neon-cyan); margin-bottom: 1rem; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 768px) { .back-btn { position: static; margin-bottom: 2rem; } }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="game-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: #ffbd2e;">./Retro_Snake</h1>
+            
+            <div class="stats-row">
+                <div>Score: <span id="score" class="score-val">00</span></div>
+                <div>High Score: <span id="high-score" class="score-val">00</span></div>
+            </div>
+
+            <div style="position: relative;">
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <div id="start-overlay" class="overlay" onclick="startGame()">
+                    <h2>SYSTEM_STANDBY</h2>
+                    <p class="hero-subtitle" style="font-size: 1rem;">Press any arrow key or Click to Start</p>
+                </div>
+                <div id="game-over-overlay" class="overlay" style="display: none;" onclick="startGame()">
+                    <h2 style="color: #ff5f56;">CRITICAL_FAILURE</h2>
+                    <p class="hero-subtitle" style="font-size: 1rem; margin-bottom: 1rem;">Snake collision detected.</p>
+                    <button class="btn">Reboot Session</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; color: var(--text-muted); font-size: 0.8rem;" class="mono">
+                [ UP / DOWN / LEFT / RIGHT ] to maneuver
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const highscoreEl = document.getElementById('high-score');
+        const startOverlay = document.getElementById('start-overlay');
+        const gameOverOverlay = document.getElementById('game-over-overlay');
+
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+
+        let score = 0;
+        let highScore = localStorage.getItem('snake-high-score') || 0;
+        highscoreEl.textContent = highScore.toString().padStart(2, '0');
+
+        let snake = [{x: 10, y: 10}];
+        let food = {x: 5, y: 5};
+        let dx = 0;
+        let dy = 0;
+        let nextDx = 0;
+        let nextDy = 0;
+        let gameLoop = null;
+        let gameActive = false;
+
+        function startGame() {
+            snake = [{x: 10, y: 10}];
+            nextDx = 1;
+            nextDy = 0;
+            score = 0;
+            scoreEl.textContent = '00';
+            spawnFood();
+            startOverlay.style.display = 'none';
+            gameOverOverlay.style.display = 'none';
+            gameActive = true;
+            if (gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(draw, 100);
+        }
+
+        function spawnFood() {
+            food = {
+                x: Math.floor(Math.random() * tileCount),
+                y: Math.floor(Math.random() * tileCount)
+            };
+            // Prevent spawning on snake
+            if (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
+                spawnFood();
+            }
+        }
+
+        function draw() {
+            dx = nextDx;
+            dy = nextDy;
+            
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+            // Wall Collision
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                return gameOver();
+            }
+
+            // Self Collision
+            if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                return gameOver();
+            }
+
+            snake.unshift(head);
+
+            // Food Collision
+            if (head.x === food.x && head.y === food.y) {
+                score += 10;
+                scoreEl.textContent = score.toString().padStart(2, '0');
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('snake-high-score', highScore);
+                    highscoreEl.textContent = highScore.toString().padStart(2, '0');
+                }
+                spawnFood();
+            } else {
+                snake.pop();
+            }
+
+            // Clear Background
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Food
+            ctx.fillStyle = '#ff5f56';
+            ctx.beginPath();
+            ctx.arc(food.x * gridSize + gridSize/2, food.y * gridSize + gridSize/2, gridSize/2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw Snake
+            snake.forEach((segment, index) => {
+                ctx.fillStyle = index === 0 ? '#00f3ff' : 'rgba(0, 243, 255, 0.6)';
+                ctx.shadowBlur = index === 0 ? 10 : 0;
+                ctx.shadowColor = '#00f3ff';
+                ctx.fillRect(segment.x * gridSize + 1, segment.y * gridSize + 1, gridSize - 2, gridSize - 2);
+            });
+            ctx.shadowBlur = 0;
+        }
+
+        function gameOver() {
+            gameActive = false;
+            clearInterval(gameLoop);
+            gameOverOverlay.style.display = 'flex';
+        }
+
+        window.addEventListener('keydown', e => {
+            if (!gameActive && e.key.startsWith('Arrow')) startGame();
+            
+            switch(e.key) {
+                case 'ArrowUp': if (dy !== 1) { nextDx = 0; nextDy = -1; } break;
+                case 'ArrowDown': if (dy !== -1) { nextDx = 0; nextDy = 1; } break;
+                case 'ArrowLeft': if (dx !== 1) { nextDx = -1; nextDy = 0; } break;
+                case 'ArrowRight': if (dx !== -1) { nextDx = 1; nextDy = 0; } break;
+            }
+        });
+    </script>
+</body>
+</html>

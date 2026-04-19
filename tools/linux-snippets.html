@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Linux Troubleshooting Snippets - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Linux Snippets</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 1000px; width: 100%; margin: 2rem auto; }
+        .search-area {
+            position: sticky; top: 0; background: var(--bg-color);
+            padding: 1.5rem 0; z-index: 10; border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+        .search-bar {
+            width: 100%; background: var(--glass-bg); border: 1px solid var(--neon-cyan);
+            padding: 1rem 1.5rem; border-radius: 12px; color: var(--text-main);
+            font-family: 'Fira Code', monospace; font-size: 1.1rem;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); outline: none;
+        }
+        .snippet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; }
+        .snippet-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease;
+            display: flex; flex-direction: column;
+        }
+        .snippet-card:hover { border-color: var(--neon-cyan); transform: translateY(-3px); }
+        .snippet-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+        .snippet-title { color: var(--neon-cyan); font-weight: 600; font-size: 1rem; }
+        .snippet-tag { font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 4px; color: var(--text-muted); }
+        .snippet-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem; flex-grow: 1; }
+        .snippet-code {
+            background: #000; padding: 0.75rem; border-radius: 6px; font-family: 'Fira Code', monospace;
+            font-size: 0.85rem; color: #fff; display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid #333;
+        }
+        .copy-icon { cursor: pointer; color: var(--text-muted); transition: color 0.3s; margin-left: 1rem; }
+        .copy-icon:hover { color: var(--neon-cyan); }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem; z-index: 20;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 768px) {
+            .back-btn { position: static; margin-bottom: 2rem; }
+            .snippet-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+    <!-- Data Source -->
+    <script src="../js/snippets-data.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Cheat_Sheet</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                A curated database of 88 essential Linux commands for system health checks and rapid troubleshooting.
+            </p>
+
+            <div class="search-area">
+                <input type="text" id="snippet-search" class="search-bar" placeholder="Search 88 commands (category, name, or command)...">
+                <div id="result-count" style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); font-family: 'Fira Code';">Loading database...</div>
+            </div>
+
+            <div class="snippet-grid" id="snippet-container">
+                <!-- Snippets will be injected here -->
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const container = document.getElementById('snippet-container');
+        const searchInput = document.getElementById('snippet-search');
+        const countDisplay = document.getElementById('result-count');
+
+        function renderSnippets(filter = '') {
+            // Check if linuxSnippets is loaded (as it's deferred)
+            if (typeof linuxSnippets === 'undefined') {
+                setTimeout(() => renderSnippets(filter), 100);
+                return;
+            }
+
+            container.innerHTML = '';
+            const filtered = linuxSnippets.filter(s => 
+                s.title.toLowerCase().includes(filter.toLowerCase()) || 
+                s.tags.some(t => t.includes(filter.toLowerCase())) ||
+                s.cmd.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            countDisplay.innerHTML = `Found <span style="color:var(--neon-cyan)">${filtered.length}</span> of <span style="color:var(--neon-cyan)">${linuxSnippets.length}</span> commands`;
+
+            filtered.forEach(s => {
+                const card = document.createElement('div');
+                card.className = 'snippet-card';
+                card.innerHTML = `
+                    <div class="snippet-header">
+                        <span class="snippet-title">${s.title}</span>
+                        <div style="display: flex; gap: 0.5rem">
+                            ${s.tags.map(t => `<span class="snippet-tag">#${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <p class="snippet-desc">${s.desc}</p>
+                    <div class="snippet-code">
+                        <span>${s.cmd}</span>
+                        <i class="fa-regular fa-copy copy-icon" onclick="copyCmd('${s.cmd}')" title="Copy to clipboard"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function copyCmd(text) {
+            navigator.clipboard.writeText(text);
+            // Simple toast equivalent
+            const originalText = countDisplay.textContent;
+            countDisplay.innerHTML = '<span style="color:var(--neon-cyan)">✓ Command copied to clipboard!</span>';
+            setTimeout(() => {
+                renderSnippets(searchInput.value);
+            }, 2000);
+        }
+
+        searchInput.addEventListener('input', (e) => renderSnippets(e.target.value));
+        
+        // Final fallback to ensure load
+        window.onload = () => renderSnippets();
+    </script>
+</body>
+</html>

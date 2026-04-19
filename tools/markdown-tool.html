@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Markdown Editor & Viewer - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Markdown Tool</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 1200px; width: 100%; margin: 2rem auto; }
+        .md-layout {
+            display: flex; gap: 1.5rem; height: 600px; margin-top: 1rem;
+        }
+        .md-pane {
+            flex: 1; display: flex; flex-direction: column;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+            overflow: hidden;
+        }
+        .pane-header {
+            padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--glass-border); color: var(--text-muted);
+            font-size: 0.8rem; text-transform: uppercase; display: flex; justify-content: space-between;
+        }
+        textarea {
+            width: 100%; flex: 1; background: transparent; border: none;
+            padding: 1.5rem; color: var(--text-main); font-family: 'Fira Code', monospace;
+            font-size: 0.95rem; resize: none; outline: none; line-height: 1.5;
+        }
+        #preview {
+            padding: 1.5rem; flex: 1; overflow-y: auto; color: var(--text-main);
+            line-height: 1.6;
+        }
+        #preview h1, #preview h2, #preview h3 { color: var(--neon-cyan); margin: 1.5rem 0 1rem; }
+        #preview code { background: rgba(0, 0, 0, 0.4); padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'Fira Code'; font-size: 0.9em; }
+        #preview pre { background: rgba(0, 0, 0, 0.4); padding: 1rem; border-radius: 8px; margin: 1rem 0; overflow-x: auto; }
+        #preview a { color: var(--neon-cyan); }
+        #preview blockquote { border-left: 4px solid var(--neon-cyan); padding-left: 1rem; color: var(--text-muted); margin: 1rem 0; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 900px) {
+            .md-layout { flex-direction: column; height: auto; }
+            textarea, #preview { height: 400px; }
+            .back-btn { position: static; margin-bottom: 2rem; }
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+    <!-- Marked.js for MD rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Markdown_Live</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Write and preview documentation in real-time. Supports GitHub Flavored Markdown.
+            </p>
+
+            <div class="glass-card" style="padding: 0;">
+                <div class="md-layout">
+                    <div class="md-pane">
+                        <div class="pane-header"><span>Editor</span><span id="char-count">0 chars</span></div>
+                        <textarea id="editor" placeholder="# Hello World\n\nStart typing your markdown here..."># Getting Started
+
+Welcome to the **JanuriDP Markdown Tool**.
+
+### Features:
+- Real-time preview
+- Syntax highlighting
+- Tables & Task lists
+
+```bash
+# Example command
+ping januridp.web.id
+```
+</textarea>
+                    </div>
+                    <div class="md-pane">
+                        <div class="pane-header"><span>Preview</span></div>
+                        <div id="preview"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; text-align: center;">
+                <button class="btn" onclick="copyRaw()">Copy Raw Text</button>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        const charCount = document.getElementById('char-count');
+
+        function updatePreview() {
+            const raw = editor.value;
+            preview.innerHTML = marked.parse(raw);
+            charCount.textContent = `${raw.length} chars`;
+        }
+
+        function copyRaw() {
+            navigator.clipboard.writeText(editor.value);
+            alert('Markdown copied!');
+        }
+
+        editor.addEventListener('input', updatePreview);
+        
+        // Initial render
+        updatePreview();
+    </script>
+</body>
+</html>

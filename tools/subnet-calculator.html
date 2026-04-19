@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Subnet Calculator - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Subnet Calculator</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+    
+    <style>
+        .calc-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 2rem auto;
+        }
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: var(--neon-cyan);
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .result-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .result-value {
+            color: var(--neon-cyan);
+            font-family: 'Fira Code', monospace;
+        }
+        .back-btn {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        .back-btn:hover {
+            color: var(--neon-cyan);
+        }
+        @media (max-width: 768px) {
+            .back-btn {
+                position: static;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Subnet_Calc</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Input an IPv4 address and CIDR prefix to calculate network details.
+            </p>
+
+            <div class="glass-card">
+                <div class="input-group">
+                    <div style="flex: 2; min-width: 250px;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">IP Address</label>
+                        <input type="text" id="ip-input" class="input-field" placeholder="192.168.1.1" value="192.168.1.1">
+                    </div>
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">CIDR (/)</label>
+                        <input type="number" id="cidr-input" class="input-field" placeholder="24" min="0" max="32" value="24">
+                    </div>
+                </div>
+
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); margin-left: 0.5rem; font-family: 'Fira Code';">subnet_info.sh</span>
+                </div>
+
+                <div id="results" class="mono" style="font-size: 0.95rem;">
+                    <div class="result-item">
+                        <span class="result-label">Netmask:</span>
+                        <span id="res-mask" class="result-value">255.255.255.0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Network:</span>
+                        <span id="res-net" class="result-value">192.168.1.0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Broadcast:</span>
+                        <span id="res-bcast" class="result-value">192.168.1.255</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Usable Range:</span>
+                        <span id="res-range" class="result-value">192.168.1.1 - 192.168.1.254</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Hosts:</span>
+                        <span id="res-hosts" class="result-value">254</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Wildcard:</span>
+                        <span id="res-wildcard" class="result-value">0.0.0.255</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const ipInput = document.getElementById('ip-input');
+        const cidrInput = document.getElementById('cidr-input');
+
+        function ipToLong(ip) {
+            return ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+        }
+
+        function longToIp(long) {
+            return [
+                (long >>> 24) & 0xFF,
+                (long >>> 16) & 0xFF,
+                (long >>> 8) & 0xFF,
+                long & 0xFF
+            ].join('.');
+        }
+
+        function calculate() {
+            const ipStr = ipInput.value.trim();
+            const cidr = parseInt(cidrInput.value, 10);
+
+            if (!/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ipStr) || isNaN(cidr) || cidr < 0 || cidr > 32) {
+                return;
+            }
+
+            const ipLong = ipToLong(ipStr);
+            const maskLong = (0xFFFFFFFF << (32 - cidr)) >>> 0;
+            const networkLong = (ipLong & maskLong) >>> 0;
+            const wildcardLong = (~maskLong) >>> 0;
+            const broadcastLong = (networkLong | wildcardLong) >>> 0;
+
+            document.getElementById('res-mask').textContent = longToIp(maskLong);
+            document.getElementById('res-net').textContent = longToIp(networkLong);
+            document.getElementById('res-bcast').textContent = longToIp(broadcastLong);
+            document.getElementById('res-wildcard').textContent = longToIp(wildcardLong);
+
+            if (cidr <= 30) {
+                const firstUsable = longToIp(networkLong + 1);
+                const lastUsable = longToIp(broadcastLong - 1);
+                document.getElementById('res-range').textContent = `${firstUsable} - ${lastUsable}`;
+                document.getElementById('res-hosts').textContent = Math.pow(2, 32 - cidr) - 2;
+            } else if (cidr === 31) {
+                document.getElementById('res-range').textContent = `${longToIp(networkLong)} - ${longToIp(broadcastLong)}`;
+                document.getElementById('res-hosts').textContent = '2 (P2P)';
+            } else {
+                document.getElementById('res-range').textContent = longToIp(networkLong);
+                document.getElementById('res-hosts').textContent = '1 (Host)';
+            }
+        }
+
+        ipInput.addEventListener('input', calculate);
+        cidrInput.addEventListener('input', calculate);
+
+        // Initial calc
+        calculate();
+    </script>
+</body>
+</html>

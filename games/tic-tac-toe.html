@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Tic Tac Toe Game - JanuriDP Portfolio">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Tic Tac Toe</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .game-container {
+            max-width: 500px; width: 100%; margin: 2rem auto; text-align: center;
+        }
+        .board {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            background: var(--glass-border); padding: 10px; border-radius: 12px;
+            margin: 2rem auto; aspect-ratio: 1/1;
+        }
+        .cell {
+            background: var(--bg-color); border-radius: 8px; display: flex;
+            justify-content: center; align-items: center; font-size: 3rem;
+            font-family: 'Fira Code', monospace; color: var(--neon-cyan);
+            cursor: pointer; transition: all 0.3s ease; height: 100%;
+        }
+        .cell:hover { background: rgba(0, 243, 255, 0.05); }
+        .cell.taken { cursor: not-allowed; }
+        .cell.x { color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
+        .cell.o { color: #ffbd2e; text-shadow: 0 0 10px #ffbd2e; }
+        
+        .status-msg {
+            font-family: 'Fira Code', monospace; font-size: 1.2rem;
+            margin-bottom: 2rem; color: var(--text-muted); height: 1.5em;
+        }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 768px) { .back-btn { position: static; margin-bottom: 2rem; } }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="game-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: #ffbd2e;">./Tic_Tac_Toe</h1>
+            <div id="status" class="status-msg">Your Turn (X)</div>
+
+            <div class="board" id="board">
+                <div class="cell" data-index="0"></div>
+                <div class="cell" data-index="1"></div>
+                <div class="cell" data-index="2"></div>
+                <div class="cell" data-index="3"></div>
+                <div class="cell" data-index="4"></div>
+                <div class="cell" data-index="5"></div>
+                <div class="cell" data-index="6"></div>
+                <div class="cell" data-index="7"></div>
+                <div class="cell" data-index="8"></div>
+            </div>
+
+            <button class="btn" onclick="resetGame()" style="width: 200px;">Reset Session</button>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const board = document.getElementById('board');
+        const cells = document.querySelectorAll('.cell');
+        const statusEl = document.getElementById('status');
+        
+        let gameState = ["", "", "", "", "", "", "", "", ""];
+        let gameActive = true;
+        const HUMAN = "X";
+        const AI = "O";
+
+        const winConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Cols
+            [0, 4, 8], [2, 4, 6]             // Diagonals
+        ];
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+
+        function handleCellClick(e) {
+            const index = e.target.getAttribute('data-index');
+            if (gameState[index] !== "" || !gameActive) return;
+
+            makeMove(index, HUMAN);
+            
+            if (gameActive) {
+                statusEl.textContent = "AI is thinking...";
+                setTimeout(aiMove, 500);
+            }
+        }
+
+        function makeMove(index, player) {
+            gameState[index] = player;
+            cells[index].textContent = player;
+            cells[index].classList.add(player.toLowerCase(), 'taken');
+            
+            checkResult();
+        }
+
+        function aiMove() {
+            if (!gameActive) return;
+            const bestMove = minimax(gameState, AI).index;
+            makeMove(bestMove, AI);
+            if (gameActive) statusEl.textContent = "Your Turn (X)";
+        }
+
+        function checkResult() {
+            let roundWon = false;
+            for (let i = 0; i < winConditions.length; i++) {
+                const [a, b, c] = winConditions[i];
+                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                    roundWon = true;
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                statusEl.textContent = gameState.includes(HUMAN) && roundWon && !gameState.includes(AI) ? "You Won!" : "AI Wins!";
+                // Check who actually won
+                const winner = gameState.filter(x => x).length % 2 === 0 ? AI : HUMAN;
+                statusEl.textContent = winner === HUMAN ? "You Won!" : "AI Wins!";
+                gameActive = false;
+                return;
+            }
+
+            if (!gameState.includes("")) {
+                statusEl.textContent = "Draw Session.";
+                gameActive = false;
+                return;
+            }
+        }
+
+        function resetGame() {
+            gameState = ["", "", "", "", "", "", "", "", ""];
+            gameActive = true;
+            statusEl.textContent = "Your Turn (X)";
+            cells.forEach(cell => {
+                cell.textContent = "";
+                cell.classList.remove('x', 'o', 'taken');
+            });
+        }
+
+        // Minimax Algorithm
+        function minimax(newBoard, player) {
+            const availSpots = newBoard.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+
+            if (checkWin(newBoard, HUMAN)) return {score: -10};
+            if (checkWin(newBoard, AI)) return {score: 10};
+            if (availSpots.length === 0) return {score: 0};
+
+            const moves = [];
+            for (let i = 0; i < availSpots.length; i++) {
+                const move = {};
+                move.index = availSpots[i];
+                newBoard[availSpots[i]] = player;
+
+                if (player === AI) {
+                    move.score = minimax(newBoard, HUMAN).score;
+                } else {
+                    move.score = minimax(newBoard, AI).score;
+                }
+
+                newBoard[availSpots[i]] = "";
+                moves.push(move);
+            }
+
+            let bestMove;
+            if (player === AI) {
+                let bestScore = -10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                let bestScore = 10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+            return moves[bestMove];
+        }
+
+        function checkWin(board, player) {
+            return winConditions.some(cond => {
+                return cond.every(index => board[index] === player);
+            });
+        }
+    </script>
+</body>
+</html>

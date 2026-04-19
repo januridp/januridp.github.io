@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="DNS Query Lookup - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | DNS Query</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 900px; width: 100%; margin: 2rem auto; }
+        .query-row { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .input-group { flex: 2; min-width: 280px; }
+        .select-group { flex: 1; min-width: 120px; }
+        
+        input[type="text"], select {
+            width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: var(--text-main); padding: 0.8rem; border-radius: 8px;
+            outline: none; font-family: 'Fira Code', monospace;
+        }
+        input[type="text"]:focus, select:focus { border-color: var(--neon-cyan); }
+        
+        .dns-results {
+            margin-top: 2rem; background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; overflow: hidden; display: none;
+        }
+        .dns-table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+        .dns-table th { background: rgba(255, 255, 255, 0.05); text-align: left; padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        .dns-table td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-main); vertical-align: top; word-break: break-all; }
+        .dns-table tr:last-child td { border-bottom: none; }
+        
+        .status-msg { margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted); display: none; }
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        @media (max-width: 768px) { .back-btn { position: static; margin-bottom: 2rem; } }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./DNS_Query</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Fetch live DNS records using Cloudflare's high-performance DNS-over-HTTPS resolution.
+            </p>
+
+            <div class="glass-card">
+                <div class="query-row">
+                    <div class="input-group">
+                        <input type="text" id="domain-input" placeholder="e.g. google.com" onkeydown="if(event.key==='Enter') queryDNS()">
+                    </div>
+                    <div class="select-group">
+                        <select id="type-select">
+                            <option value="A">A</option>
+                            <option value="AAAA">AAAA</option>
+                            <option value="MX">MX</option>
+                            <option value="TXT">TXT</option>
+                            <option value="NS">NS</option>
+                            <option value="CNAME">CNAME</option>
+                            <option value="SOA">SOA</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="queryDNS()" style="min-width: 120px;">Query</button>
+                </div>
+
+                <div id="status-msg" class="status-msg">Resolving records...</div>
+
+                <div class="dns-results" id="results-container">
+                    <table class="dns-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th style="width: 80px;">Type</th>
+                                <th style="width: 80px;">TTL</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dns-tbody">
+                            <!-- Results injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        async function queryDNS() {
+            const domain = document.getElementById('domain-input').value.trim();
+            const type = document.getElementById('type-select').value;
+            const status = document.getElementById('status-msg');
+            const results = document.getElementById('results-container');
+            const tbody = document.getElementById('dns-tbody');
+
+            if (!domain) return;
+
+            status.textContent = 'Resolving records...';
+            status.style.display = 'block';
+            results.style.display = 'none';
+
+            try {
+                const response = await fetch(`https://cloudflare-dns.com/dns-query?name=${domain}&type=${type}`, {
+                    headers: { 'Accept': 'application/dns-json' }
+                });
+                const data = await response.json();
+
+                tbody.innerHTML = '';
+                
+                if (data.Answer && data.Answer.length > 0) {
+                    data.Answer.forEach(ans => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${ans.name}</td>
+                            <td>${getTypeString(ans.type)}</td>
+                            <td>${ans.TTL}s</td>
+                            <td>${ans.data}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    results.style.display = 'block';
+                    status.style.display = 'none';
+                } else {
+                    status.textContent = 'No records found for this type.';
+                }
+            } catch (error) {
+                status.textContent = 'Error: Failed to fetch DNS data.';
+            }
+        }
+
+        function getTypeString(typeNum) {
+            const types = { 1: 'A', 2: 'NS', 5: 'CNAME', 6: 'SOA', 15: 'MX', 16: 'TXT', 28: 'AAAA' };
+            return types[typeNum] || typeNum;
+        }
+    </script>
+</body>
+</html>

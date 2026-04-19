@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Hash Generator & Verifier - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Hash Tool</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 800px; width: 100%; margin: 2rem auto; }
+        .hash-display {
+            background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border);
+            border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;
+            font-family: 'Fira Code', monospace; word-break: break-all;
+        }
+        .options-row { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .control-block { flex: 1; min-width: 200px; }
+        label { display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+        textarea, select, input[type="text"] {
+            width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: var(--text-main); padding: 0.75rem; border-radius: 8px;
+            outline: none; font-family: 'Fira Code', monospace;
+        }
+        textarea:focus, select:focus, input[type="text"]:focus { border-color: var(--neon-cyan); }
+        
+        .verifier-zone {
+            margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--glass-border);
+        }
+        .status-badge {
+            display: inline-block; padding: 0.3rem 0.8rem; border-radius: 4px;
+            font-size: 0.8rem; font-weight: 600; margin-top: 1rem;
+        }
+        .status-match { background: rgba(39, 201, 63, 0.2); color: #27c93f; border: 1px solid #27c93f; }
+        .status-mismatch { background: rgba(255, 95, 86, 0.2); color: #ff5f56; border: 1px solid #ff5f56; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 768px) { .back-btn { position: static; margin-bottom: 2rem; } }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+    <!-- CryptoJS for more algorithms -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Hash_Node</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Generate cryptographic checksums and verify data integrity using various hash algorithms.
+            </p>
+
+            <div class="glass-card">
+                <div class="control-block" style="margin-bottom: 1.5rem;">
+                    <label>Plain Text Input</label>
+                    <textarea id="hash-input" placeholder="Enter text to hash..." style="height: 100px;"></textarea>
+                </div>
+
+                <div class="options-row">
+                    <div class="control-block">
+                        <label>Algorithm</label>
+                        <select id="hash-algo">
+                            <option value="SHA256">SHA-256 (Recommended)</option>
+                            <option value="SHA512">SHA-512</option>
+                            <option value="SHA1">SHA-1</option>
+                            <option value="MD5">MD5</option>
+                            <option value="SHA3">SHA-3</option>
+                            <option value="RIPEMD160">RIPEMD-160</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="hash-display">
+                    <label style="margin-bottom: 0.75rem;">Calculated Hash</label>
+                    <div id="hash-output" style="color: var(--neon-cyan); font-size: 0.9rem;">-</div>
+                </div>
+
+                <div class="verifier-zone">
+                    <label>Verify Hash Match</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" id="verify-input" placeholder="Paste expected hash here..." style="flex: 1;">
+                    </div>
+                    <div id="verify-status"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const hashInput = document.getElementById('hash-input');
+        const hashAlgo = document.getElementById('hash-algo');
+        const hashOutput = document.getElementById('hash-output');
+        const verifyInput = document.getElementById('verify-input');
+        const verifyStatus = document.getElementById('verify-status');
+
+        function genHash() {
+            const text = hashInput.value;
+            if (!text) {
+                hashOutput.textContent = '-';
+                checkMatch();
+                return;
+            }
+
+            const algo = hashAlgo.value;
+            let hashHex = "";
+
+            try {
+                if (algo === 'SHA256') hashHex = CryptoJS.SHA256(text).toString();
+                else if (algo === 'SHA512') hashHex = CryptoJS.SHA512(text).toString();
+                else if (algo === 'SHA1') hashHex = CryptoJS.SHA1(text).toString();
+                else if (algo === 'MD5') hashHex = CryptoJS.MD5(text).toString();
+                else if (algo === 'SHA3') hashHex = CryptoJS.SHA3(text).toString();
+                else if (algo === 'RIPEMD160') hashHex = CryptoJS.RIPEMD160(text).toString();
+            } catch (e) {
+                hashHex = "Error generating hash";
+            }
+            
+            hashOutput.textContent = hashHex;
+            checkMatch();
+        }
+
+        function checkMatch() {
+            const calculated = hashOutput.textContent.toLowerCase();
+            const expected = verifyInput.value.trim().toLowerCase();
+            
+            if (!expected) {
+                verifyStatus.innerHTML = '';
+                return;
+            }
+
+            if (calculated === expected) {
+                verifyStatus.innerHTML = '<span class="status-badge status-match"><i class="fa-solid fa-check"></i> Hash Match Found</span>';
+            } else {
+                verifyStatus.innerHTML = '<span class="status-badge status-mismatch"><i class="fa-solid fa-xmark"></i> Hash Mismatch</span>';
+            }
+        }
+
+        hashInput.addEventListener('input', genHash);
+        hashAlgo.addEventListener('change', genHash);
+        verifyInput.addEventListener('input', checkMatch);
+    </script>
+</body>
+</html>

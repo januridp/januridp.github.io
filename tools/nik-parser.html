@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="NIK KTP Parser - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | NIK KTP Parser</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 900px; width: 100%; margin: 2rem auto; }
+        .nik-results {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 2rem; margin-top: 2rem; display: none;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;
+        }
+        .info-card { background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 1rem; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .info-label { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem; display: block; }
+        .info-value { color: var(--text-main); font-family: 'Fira Code', monospace; font-size: 1rem; word-break: break-all; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 768px) { .back-btn { position: static; margin-bottom: 2rem; } }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./NIK_Parser</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Parse Indonesian National Identity Numbers (NIK) to extract demographic and geographic data.
+            </p>
+
+            <div class="glass-card">
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="nik-input" maxlength="16" placeholder="Enter 16-digit NIK..." style="flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.8rem; border-radius: 8px; font-family: 'Fira Code'; outline: none;" onkeydown="if(event.key==='Enter') parseNIK()">
+                    <button class="btn" onclick="parseNIK()" style="min-width: 120px;">Parse</button>
+                </div>
+
+                <div id="status-msg" style="margin-top: 1.5rem; color: var(--text-muted); display: none;">Querying database...</div>
+
+                <div class="nik-results" id="results">
+                    <div class="info-card">
+                        <span class="info-label">Province</span>
+                        <div class="info-value" id="val-provinsi">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">City / Regency</span>
+                        <div class="info-value" id="val-kotakab">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">District</span>
+                        <div class="info-value" id="val-kecamatan">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Date of Birth</span>
+                        <div class="info-value" id="val-lahir">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Gender</span>
+                        <div class="info-value" id="val-kelamin">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Postal Code</span>
+                        <div class="info-value" id="val-kodepos">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Age</span>
+                        <div class="info-value" id="val-usia">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Zodiac</span>
+                        <div class="info-value" id="val-zodiak">-</div>
+                    </div>
+                    <div class="info-card" style="grid-column: span 1;">
+                        <span class="info-label">Pasaran</span>
+                        <div class="info-value" id="val-pasaran">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        async function parseNIK() {
+            const nik = document.getElementById('nik-input').value.trim();
+            const status = document.getElementById('status-msg');
+            const results = document.getElementById('results');
+
+            if (!nik || nik.length !== 16) {
+                alert('Please enter a valid 16-digit NIK.');
+                return;
+            }
+
+            status.textContent = 'Querying database...';
+            status.style.display = 'block';
+            results.style.display = 'none';
+
+            try {
+                const apiURL = `https://script.google.com/macros/s/AKfycbwwGKJ6JU7xyfpl_fwQpjsOjzoHZAUzTyOsnXJnbNuDyTx8aqvx5OX8TXHGKUT-OTh5/exec?nik=${nik}`;
+                
+                // We fetch through Google Apps Script which redirects.
+                // Fetch handles redirects by default if same origin, but across origins 
+                // it might need follow: 'manual' if we were on a server, but here 
+                // standard fetch usually works if CORS is set on the final endpoint.
+                const response = await fetch(apiURL);
+                if (!response.ok) throw new Error('API Error');
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('val-provinsi').textContent = data.provinsi || 'N/A';
+                    document.getElementById('val-kotakab').textContent = data.kotakab || 'N/A';
+                    document.getElementById('val-kecamatan').textContent = data.kecamatan || 'N/A';
+                    document.getElementById('val-lahir').textContent = data.lahir || 'N/A';
+                    document.getElementById('val-kelamin').textContent = data.kelamin || 'N/A';
+                    document.getElementById('val-kodepos').textContent = data.kodepos || 'N/A';
+                    document.getElementById('val-usia').textContent = data.usia || 'N/A';
+                    document.getElementById('val-zodiak').textContent = data.zodiak || 'N/A';
+                    document.getElementById('val-pasaran').textContent = data.pasaran || 'N/A';
+                    
+                    status.style.display = 'none';
+                    results.style.display = 'grid';
+                } else {
+                    status.innerHTML = `<span style="color: #ff5f56">Error: ${data.message || 'NIK not found or invalid format.'}</span>`;
+                }
+            } catch (err) {
+                status.innerHTML = `<span style="color: #ff5f56">Error connecting to the parsing service. Please try again later.</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Crontab Generator - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Crontab Generator</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 850px; width: 100%; margin: 2rem auto; }
+        .cron-output {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+        }
+        .cron-expression {
+            font-size: 1.8rem;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+        .cron-human {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .grid-settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        .select-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+        select {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 0.6rem;
+            border-radius: 6px;
+            outline: none;
+            font-family: 'Fira Code', monospace;
+            cursor: pointer;
+        }
+        select:focus { border-color: var(--neon-cyan); }
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 768px) { .back-btn { position: static; margin-bottom: 2rem; } }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Cron_Gen</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Generate crontab expressions for your Linux jobs with a human-friendly interface.
+            </p>
+
+            <div class="cron-output">
+                <div id="cron-val" class="cron-expression">* * * * *</div>
+                <div id="cron-human" class="cron-human">Every minute</div>
+            </div>
+
+            <div class="glass-card">
+                <div class="select-group" style="margin-bottom: 2rem;">
+                    <label>Quick Presets</label>
+                    <select id="preset">
+                        <option value="">-- Choose a preset --</option>
+                        <option value="* * * * *">Every minute</option>
+                        <option value="*/5 * * * *">Every 5 minutes</option>
+                        <option value="0 * * * *">Every hour (Hourly)</option>
+                        <option value="0 0 * * *">Every day at midnight (Daily)</option>
+                        <option value="0 0 * * 0">Every Sunday at midnight (Weekly)</option>
+                        <option value="0 0 1 * *">1st of every month (Monthly)</option>
+                    </select>
+                </div>
+
+                <div class="grid-settings">
+                    <div class="select-group">
+                        <label>Minute</label>
+                        <select id="min">
+                            <option value="*">Every minute (*)</option>
+                            <option value="*/5">Every 5 mins</option>
+                            <option value="0">At min 0</option>
+                            <option value="15">At min 15</option>
+                            <option value="30">At min 30</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label>Hour</label>
+                        <select id="hour">
+                            <option value="*">Every hour (*)</option>
+                            <option value="0">12 AM (0)</option>
+                            <option value="12">12 PM (12)</option>
+                            <option value="*/2">Every 2 hours</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label>Day</label>
+                        <select id="day">
+                            <option value="*">Every day (*)</option>
+                            <option value="1">1st of month</option>
+                            <option value="15">15th of month</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label>Month</label>
+                        <select id="month">
+                            <option value="*">Every month (*)</option>
+                            <option value="1">January</option>
+                            <option value="6">June</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label>Weekday</label>
+                        <select id="weekday">
+                            <option value="*">Any day (*)</option>
+                            <option value="0">Sunday</option>
+                            <option value="1">Monday</option>
+                            <option value="5">Friday</option>
+                            <option value="1-5">Mon-Fri</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button class="btn" id="copy-cron" style="flex: 1;">Copy Expression</button>
+                    <button class="btn" id="reset-cron" style="border-color: var(--text-muted); color: var(--text-muted);">Reset</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const selects = ['min', 'hour', 'day', 'month', 'weekday'];
+        const cronVal = document.getElementById('cron-val');
+        const cronHuman = document.getElementById('cron-human');
+
+        function updateCron() {
+            const values = selects.map(id => document.getElementById(id).value);
+            const expression = values.join(' ');
+            cronVal.textContent = expression;
+            
+            // Simple human readable logic
+            let human = "Running ";
+            if (expression === '* * * * *') human = "Every minute";
+            else if (expression === '0 * * * *') human = "Every hour at minute 0";
+            else if (expression === '0 0 * * *') human = "Every day at midnight";
+            else human = `Scheduled at: ${values[0]} ${values[1]} ${values[2]} ${values[3]} ${values[4]} (M H D m W)`;
+            
+            cronHuman.textContent = human;
+        }
+
+        selects.forEach(id => {
+            document.getElementById(id).addEventListener('change', updateCron);
+        });
+
+        document.getElementById('preset').addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (!val) return;
+            const parts = val.split(' ');
+            selects.forEach((id, i) => {
+                const el = document.getElementById(id);
+                // Try to find matching option, otherwise set custom
+                if ([...el.options].some(o => o.value === parts[i])) {
+                    el.value = parts[i];
+                }
+            });
+            updateCron();
+        });
+
+        document.getElementById('copy-cron').addEventListener('click', () => {
+            navigator.clipboard.writeText(cronVal.textContent);
+            alert('Cron expression copied!');
+        });
+
+        document.getElementById('reset-cron').addEventListener('click', () => {
+            selects.forEach(id => document.getElementById(id).value = '*');
+            updateCron();
+        });
+    </script>
+</body>
+</html>

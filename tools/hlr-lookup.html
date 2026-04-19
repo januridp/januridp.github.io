@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="HLR Lookup - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | HLR Lookup</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 900px; width: 100%; margin: 2rem auto; }
+        .hlr-results {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 2rem; margin-top: 2rem; display: none;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;
+        }
+        .info-card { background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 1rem; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .info-label { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem; display: block; }
+        .info-value { color: var(--text-main); font-family: 'Fira Code', monospace; font-size: 1.1rem; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .back-btn:hover { color: var(--neon-cyan); }
+        @media (max-width: 768px) { .back-btn { position: static; margin-bottom: 2rem; } }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./HLR_Query</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Identify operator and regional information for phone numbers worldwide (Optimized for Indonesia).
+            </p>
+
+            <div class="glass-card">
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="msisdn-input" placeholder="e.g. 08123456789" style="flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.8rem; border-radius: 8px; font-family: 'Fira Code'; outline: none;" onkeydown="if(event.key==='Enter') lookupHLR()">
+                    <button class="btn" onclick="lookupHLR()" style="min-width: 120px;">Lookup</button>
+                </div>
+
+                <div id="status-msg" style="margin-top: 1.5rem; color: var(--text-muted); display: none;">Querying Home Location Register...</div>
+
+                <div class="hlr-results" id="results">
+                    <div class="info-card">
+                        <span class="info-label">Provider / Operator</span>
+                        <div class="info-value" id="val-provider" style="color: var(--neon-cyan);">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Region / City</span>
+                        <div class="info-value" id="val-city">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Network Type</span>
+                        <div class="info-value" id="val-type" style="text-transform: capitalize;">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Country</span>
+                        <div class="info-value" id="val-country">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Timezone</span>
+                        <div class="info-value" id="val-timezone">-</div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Calling Code</span>
+                        <div class="info-value" id="val-code">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        async function lookupHLR() {
+            const msisdn = document.getElementById('msisdn-input').value.trim();
+            const status = document.getElementById('status-msg');
+            const results = document.getElementById('results');
+
+            if (!msisdn) {
+                alert('Please enter a phone number.');
+                return;
+            }
+
+            status.textContent = 'Querying Home Location Register...';
+            status.style.display = 'block';
+            results.style.display = 'none';
+
+            try {
+                const apiURL = `https://script.google.com/macros/s/AKfycbwx_d7KPLH1x2AjCf8yfAAvOCueZZxteegaormYL3i9xf2ejkMwodJVHPB0OZeEZ_Pc_A/exec?no=${msisdn}`;
+                
+                const response = await fetch(apiURL);
+                if (!response.ok) throw new Error('API Error');
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('val-provider').textContent = data.provider || 'N/A';
+                    document.getElementById('val-city').textContent = data.city || 'N/A';
+                    document.getElementById('val-type').textContent = data.type || 'N/A';
+                    document.getElementById('val-country').textContent = data.country || 'N/A';
+                    document.getElementById('val-timezone').textContent = data.timezone || 'N/A';
+                    document.getElementById('val-code').textContent = `+${data.number_code || ''}`;
+                    
+                    status.style.display = 'none';
+                    results.style.display = 'grid';
+                } else {
+                    status.innerHTML = `<span style="color: #ff5f56">Error: Number not found or invalid format.</span>`;
+                }
+            } catch (err) {
+                status.innerHTML = `<span style="color: #ff5f56">Error connecting to the lookup service. Please try again later.</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

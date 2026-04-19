@@ -1,6 +1,3 @@
-// Dynamic Year
-document.getElementById('year').textContent = new Date().getFullYear();
-
 // Scroll Animations (Intersection Observer)
 const observerOptions = {
     root: null,
@@ -23,9 +20,14 @@ document.querySelectorAll('.fade-in').forEach(element => {
 
 // Update Active Nav Link on Scroll
 const sections = document.querySelectorAll('section');
-const navLinks = document.querySelectorAll('.nav-links a');
+let navLinks = document.querySelectorAll('.nav-links a');
 
 window.addEventListener('scroll', () => {
+    // Refresh navLinks if empty (e.g. if header was injected late)
+    if (navLinks.length === 0) {
+        navLinks = document.querySelectorAll('.nav-links a');
+    }
+
     let current = '';
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
@@ -37,7 +39,8 @@ window.addEventListener('scroll', () => {
 
     navLinks.forEach(link => {
         link.classList.remove('active');
-        if (link.getAttribute('href').includes(current)) {
+        const href = link.getAttribute('href');
+        if (href.includes(current) && current !== '') {
             link.classList.add('active');
         }
     });

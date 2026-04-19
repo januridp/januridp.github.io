@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Domain WHOIS Lookup - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | WHOIS Lookup</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 900px; width: 100%; margin: 2rem auto; }
+        .whois-display {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 2rem; margin-top: 2rem; display: none;
+        }
+        .info-row { display: grid; grid-template-columns: 160px 1fr; gap: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 0.5rem; }
+        .info-label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; font-weight: 600; padding-top: 0.2rem; }
+        .info-value { color: var(--text-main); font-family: 'Fira Code', monospace; word-break: break-all; }
+        
+        .raw-btn { font-size: 0.75rem; color: var(--neon-cyan); cursor: pointer; text-decoration: underline; margin-top: 1rem; display: inline-block; }
+        #raw-view { display: none; margin-top: 1.5rem; background: #000; padding: 1rem; border-radius: 8px; font-size: 0.8rem; overflow-x: auto; color: #fff; }
+        
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./WHOIS_Lookup</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Fetch domain registration data using the Registration Data Access Protocol (RDAP).
+            </p>
+
+            <div class="glass-card">
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="domain-input" placeholder="e.g. google.com" style="flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.8rem; border-radius: 8px; font-family: 'Fira Code'; outline: none;" onkeydown="if(event.key==='Enter') lookupWHOIS()">
+                    <button class="btn" onclick="lookupWHOIS()" style="min-width: 120px;">Lookup</button>
+                </div>
+
+                <div id="status-msg" style="margin-top: 1.5rem; color: var(--text-muted); display: none;">Querying RDAP registries...</div>
+
+                <div class="whois-display" id="results">
+                    <div class="info-row">
+                        <div class="info-label">Domain</div>
+                        <div class="info-value" id="val-domain">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Registrar</div>
+                        <div class="info-value" id="val-registrar">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Created</div>
+                        <div class="info-value" id="val-created">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Expiration</div>
+                        <div class="info-value" id="val-expires">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Status</div>
+                        <div class="info-value" id="val-status">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Nameservers</div>
+                        <div class="info-value" id="val-ns">-</div>
+                    </div>
+
+                    <span class="raw-btn" onclick="toggleRaw()">Toggle Raw JSON View</span>
+                    <pre id="raw-view"></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        async function lookupWHOIS() {
+            const domain = document.getElementById('domain-input').value.trim();
+            const status = document.getElementById('status-msg');
+            const results = document.getElementById('results');
+
+            if (!domain) return;
+
+            status.textContent = 'Querying standard RDAP registries...';
+            status.style.display = 'block';
+            results.style.display = 'none';
+
+            try {
+                // We use rdap.org as a helpful redirector
+                const response = await fetch(`https://rdap.org/domain/${domain}`);
+                if (!response.ok) throw new Error('CORS or Network error');
+                
+                const data = await response.json();
+                
+                // Parsing logic
+                document.getElementById('val-domain').textContent = data.ldhName || domain;
+                
+                // Registrar
+                const registrarObj = data.entities?.find(e => e.roles?.includes('registrar'));
+                document.getElementById('val-registrar').textContent = registrarObj?.vcardArray?.[1]?.[0]?.[3] || 'Not provided';
+                
+                // Events (Dates)
+                const created = data.events?.find(e => e.eventAction === 'registration')?.eventDate;
+                const expires = data.events?.find(e => e.eventAction === 'expiration')?.eventDate;
+                document.getElementById('val-created').textContent = created ? new Date(created).toLocaleDateString() : 'Unknown';
+                document.getElementById('val-expires').textContent = expires ? new Date(expires).toLocaleDateString() : 'Unknown';
+                
+                // Status
+                document.getElementById('val-status').textContent = data.status?.join(', ') || 'N/A';
+                
+                // Nameservers
+                const ns = data.nameservers?.map(n => n.ldhName).join(', ');
+                document.getElementById('val-ns').textContent = ns || 'None found';
+
+                document.getElementById('raw-view').textContent = JSON.stringify(data, null, 2);
+                
+                status.style.display = 'none';
+                results.style.display = 'block';
+            } catch (err) {
+                status.innerHTML = `<span style="color: #ff5f56">Error: Could not retrieve RDAP data. This TLD may not support public RDAP via browser, or the registry blocks direct domain queries.</span><br><br><small>Try .com, .net, or .org domains.</small>`;
+            }
+        }
+
+        function toggleRaw() {
+            const raw = document.getElementById('raw-view');
+            raw.style.display = raw.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="description" content="Case Converter - SysAdmin Tool by Januri Prasetyo">
+    <meta name="author" content="Januri Prasetyo">
+    <link rel="icon" type="image/png" href="../profile-pic.png">
+    <title>JanuriDP | Convert Case</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .calc-container { max-width: 800px; width: 100%; margin: 2rem auto; }
+        textarea {
+            width: 100%; height: 250px; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            padding: 1.5rem; color: var(--text-main); font-family: 'Fira Code', monospace;
+            font-size: 1rem; outline: none; margin-bottom: 2rem;
+        }
+        textarea:focus { border-color: var(--neon-cyan); }
+        .btn-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;
+        }
+        .back-btn {
+            position: absolute; top: 2rem; left: 2rem; color: var(--text-muted);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+    </style>
+    <script src="../js/header.js" defer></script>
+    <script src="../js/footer.js" defer></script>
+</head>
+<body>
+
+    <app-header></app-header>
+
+    <section class="fade-in visible" style="padding-top: 8rem;">
+        <a href="../index.html#tools" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> back to terminal
+        </a>
+
+        <div class="calc-container">
+            <h1 class="mono" style="margin-bottom: 1rem; color: var(--neon-cyan);">./Case_Mod</h1>
+            <p class="hero-subtitle" style="margin-bottom: 2rem; margin-left: 0; text-align: left;">
+                Convert your text between different casing formats instantly.
+            </p>
+
+            <div class="glass-card">
+                <textarea id="text-input" placeholder="Type or paste your text here..."></textarea>
+                
+                <div class="btn-grid">
+                    <button class="btn" onclick="transform('upper')">UPPERCASE</button>
+                    <button class="btn" onclick="transform('lower')">lowercase</button>
+                    <button class="btn" onclick="transform('title')">Title Case</button>
+                    <button class="btn" onclick="transform('camel')">camelCase</button>
+                    <button class="btn" onclick="transform('snake')">snake_case</button>
+                    <button class="btn" onclick="transform('pascal')">PascalCase</button>
+                </div>
+                
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button class="btn" style="flex: 1; border-color: var(--text-muted); color: var(--text-muted);" onclick="clearAll()">Clear</button>
+                    <button class="btn" style="flex: 1;" onclick="copyResult()">Copy to Clipboard</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+
+    <script>
+        const input = document.getElementById('text-input');
+
+        function transform(type) {
+            let val = input.value;
+            if (!val) return;
+
+            switch(type) {
+                case 'upper': input.value = val.toUpperCase(); break;
+                case 'lower': input.value = val.toLowerCase(); break;
+                case 'title':
+                    input.value = val.toLowerCase().split(' ').map(s => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
+                    break;
+                case 'camel':
+                    input.value = val.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").split(' ')
+                        .map((s, i) => i === 0 ? s : s.charAt(0).toUpperCase() + s.substring(1)).join('');
+                    break;
+                case 'snake':
+                    input.value = val.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").split(' ').join('_');
+                    break;
+                case 'pascal':
+                    input.value = val.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").split(' ')
+                        .map(s => s.charAt(0).toUpperCase() + s.substring(1)).join('');
+                    break;
+            }
+        }
+
+        function clearAll() { input.value = ''; }
+        function copyResult() {
+            navigator.clipboard.writeText(input.value);
+            alert('Text copied!');
+        }
+    </script>
+</body>
+</html>
