@@ -17,8 +17,8 @@ class AppHeader extends HTMLElement {
                 <ul class="nav-links">
                     <li><a href="${base}index.html#home">./home</a></li>
                     <li><a href="${base}index.html#about">./about</a></li>
-                    <li><a href="${base}index.html#tools">./tools</a></li>
-                    <li><a href="https://blog.januridp.web.id/" target="_blank">./blog</a></li>
+                    <li><a href="https://home.januridp.web.id/">./tools</a></li>
+                    <li><a href="https://www.januridp.web.id/" target="_blank">./blog</a></li>
                     <li><a href="${base}index.html#contact">./contact</a></li>
                 </ul>
             </nav>
