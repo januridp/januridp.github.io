@@ -1,11 +1,14 @@
 # januridp.github.io
-Source for https://januridp.web.id
+Source for https://home.januridp.web.id
 
 ## Screenshot v0
 ![img](2018-12-10-15-32-januridp.com.png)
 
 ## Screenshot v1
 ![img](Januri-D-P--04-13-2026_08_55_PM.png)
+
+## Screenshot v2
+![img](JanuriDP-Home-09-25-2026_02_28_PM.png)
 
 ## Prompt
 Model: Gemini 3.1 Pro (High)
